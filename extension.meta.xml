@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<extension id="symphony-cart" status="unreleased" xmlns="http://symphony-cms.com/schemas/extension/1.0">
+<extension id="symphony-cart" status="released" xmlns="http://symphony-cms.com/schemas/extension/1.0">
 	<name>Symphony Cart</name>
 	<description>Provides a basket functionality</description>
 	<url type="discuss">http://github.com/davjand/symphony-cart</url>
@@ -13,8 +13,6 @@
 		</author>
 	</authors>
 	<releases>
-		<release version="0.1" date="2012-11-18" min="2.3">
-			- Started
-		</release>
+		<release version="1.0" date="2012-11-18" min="2.3" />
 	</releases>	
 </extension>
