@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<extension id="symphony-cart" status="unreleased" xmlns="http://symphony-cms.com/schemas/extension/1.0">
+	<name>Symphony Cart</name>
+	<description>Provides a basket functionality</description>
+	<url type="discuss">http://github.com/davjand/symphony-cart</url>
+	<types>
+		<type>Custom</type>
+	</types>
+	<authors>
+		<author>
+			<name github="davjand">David Anderson</name>
+			<website>http://veodesign.co.uk</website>
+		</author>
+	</authors>
+	<releases>
+		<release version="0.1" date="2012-11-18" min="2.3">
+			- Started
+		</release>
+	</releases>	
+</extension>
