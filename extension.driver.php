@@ -15,14 +15,24 @@
 		private $TABLE = 'tbl_symphony_cart';
 		private $CONFIG = 'symphony-cart';
 		private $COOKIE_PREFIX = 'cart-';
-		
-		
+				
+		private $cookie = NULL;
+		private $session = NULL;
+
 		
 		/**
-		 * Returns the cookie prefix
+		 * Returns the current cookie
 		*/
-		public function getCookiePrefix(){
-			return $this->COOKIE_PREFIX;
+		public function getCookie(){
+			return $this->cookie;
+		}
+		
+		/**
+		 * Get the database table
+		 *
+		*/
+		public function getDatabaseTable(){
+			return $this->TABLE;
 		}
 		
 		/* ================================================ */
@@ -108,10 +118,7 @@
 		*/
 		public function uninstall() {
 			
-			try {
-				Symphony::Database()->query("DROP TABLE IF EXISTS $this->TABLE");
-				
-			} catch(Exception $e) { print_r($e); return false; }
+			Symphony::Database()->query("DROP TABLE IF EXISTS $this->TABLE");
 			
 			Symphony::Configuration()->remove($this->CONFIG);	
 		}
@@ -173,9 +180,6 @@
 		}
 		
 		
-		
-		
-		
 		/* ================================================ */
 		/* ================================================ */
 		
@@ -196,11 +200,46 @@
 		
 		
 		/**
+		 * Returns the ID of the currently active session
+		 * Creates a new session / cookie if needed
+		 *
+		 * Returns the session
+		*/
+		public function initCartSession(){
+			
+			if(is_null($this->session)){
+				
+				//look for the cookie
+				if(is_null($this->cookie)) {
+					$this->cookie = new Cookie(
+						$this->COOKIE_PREFIX, TWO_WEEKS, __SYM_COOKIE_PATH__, null, true
+					);
+				}
+				
+				//Get the existing session or initialize a new one
+				if($this->cookie->get('session') == NULL){
+					$this->session = uniqid(true);
+					$this->cookie->set('session',$this->session);
+				}
+				else{
+					$this->session = $this->cookie->get('session',$this->session);
+				}
+			}
+			return $this->session;
+		}
+		
+		
+		/**
 		 * Used to add an item record to the database
 		 *
-		 * @param $data(product_id,
+		 * @param $product_id
+		 * @param $quantity
 		*/
-		public function addItemToBasket($session, $product_id,$quantity){
+		public function addItemToBasket($product_id,$quantity){
+	
+			$this->initCartSession();
+			$session = $this->session;
+
 			$sql = "INSERT INTO $this->TABLE (`session_id`,`state`,`product_id`,`quantity`) VALUES(
 				'$session','basket',$product_id,$quantity
 			);";
