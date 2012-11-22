@@ -4,7 +4,7 @@
 
 	Class datasourcesymphony_cart extends Datasource{
 
-		public $dsParamROOTELEMENT = 'cart';
+		public $dsParamROOTELEMENT = 'symphony-cart';
 		
 		protected $driver;
 		
@@ -73,7 +73,7 @@
 					$xmlResult->appendChild($xml);
 					
 				}
-				$param_pool['symphony_cart']=$params;	
+				$param_pool['symphony-cart']=$params;	
 			}
 			
 			return $xmlResult;
