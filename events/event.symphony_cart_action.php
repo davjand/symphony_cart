@@ -39,7 +39,46 @@
 		}
 
 		public static function documentation(){
-			return '';
+			return '
+				<h3>Allows items to be added to, edited and removed from the cart</h3>
+				<p> Use the symphony-cart-action event on your page</p>
+				 <pre class="XML"><code>
+				&lt;form action=&quot;&quot; method=&quot;post&quot;&gt;
+				
+					&lt;!-- Quantity is optional, defaults to 1 --&gt;
+					
+					&lt;input type=&quot;text&quot; name=&quot;symphony-cart-action[quantity]&quot; value=&quot;1&quot;&gt;
+					
+					&lt;!-- YOU NEED TO SET THE PRODUCTS SECTION IN THE CONFIGURATION FIRST --&gt;
+					
+					&lt;input name=&quot;symphony-cart-action[product_id]&quot; type=&quot;hidden&quot; value=&quot;{YOUR PRODUCT ID}&quot;&gt;
+					
+					&lt;input name=&quot;symphony-cart-action[add | edit | remove]&quot; type=&quot;submit&quot; value=&quot;Add to Basket&quot;&gt;
+					
+				&lt;/form&gt;
+				</code></pre>
+				
+				<h3>Success Response</h3>
+				
+				<pre class="XML"><code> 
+				&lt;events&gt;
+					&lt;symphony-cart-action&gt;
+						&lt;success&gt;Message&lt;/success&gt;
+					&lt;/symphony-cart-action&gt;
+				&lt;/events&gt;
+				</code></pre>
+				
+				<h3>Error Response>
+				
+				 <pre class="XML"><code>
+				&lt;events&gt;
+					&lt;symphony-cart-action&gt;
+						&lt;error&gt;No Product ID Set&lt;/error&gt;
+					&lt;/symphony-cart-action&gt;
+				&lt;/events&gt;
+				</code></pre>
+				
+				';
 		}
 		
 		
