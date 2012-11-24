@@ -129,11 +129,20 @@
 			}
 			//UPDATE
 			elseif(isset($submitData['update'])){
-				
+				if(!isset($submitData['quantity'])){
+					$result->appendChild(new XMLElement('error', "Cannot Update: No Quantity Set"));
+					return $result;
+				}
+				else{
+					$quantity = $submitData['quantity'];
+					$this->driver->updateItemInBasket($product_id,$quantity);
+					$result->appendChild(new XMLElement('success', "Product Quantity Updated"));
+				}	
 			}
 			//REMOVE
 			elseif(isset($submitData['remove'])){
-				
+				$this->driver->removeItemFromBasket($product_id);
+				$result->appendChild(new XMLElement('success', "Product Removed"));
 			}
 			
 			return $result;

@@ -15,10 +15,11 @@
 		private $TABLE = 'tbl_symphony_cart';
 		private $CONFIG = 'symphony-cart';
 		private $COOKIE_PREFIX = 'cart-';
+		private $STATE_BASKET = 'basket';
 				
 		private $cookie = NULL;
 		private $session = NULL;
-
+		
 		
 		/**
 		 * Returns the current cookie
@@ -236,15 +237,95 @@
 		 * @param $quantity
 		*/
 		public function addItemToBasket($product_id,$quantity){
+			$session = $this->initCartSession();
+			
+			//see if in basket
+			$existingProduct = $this->productInBasket($product_id);
+			
+			if($existingProduct != NULL){
+				$this->updateItemInBasket($product_id,$quantity + $existingProduct['quantity']);	
+			}
+			else{
+				//clean all the values
+				$product_id = Symphony::Database()->cleanValue($product_id);
+				$quantity = Symphony::Database()->cleanValue($quantity);
+				$session = Symphony::Database()->cleanValue($session);
 	
-			$this->initCartSession();
-			$session = $this->session;
-
-			$sql = "INSERT INTO $this->TABLE (`session_id`,`state`,`product_id`,`quantity`) VALUES(
-				'$session','basket',$product_id,$quantity
-			);";
+				$sql = "INSERT INTO $this->TABLE (`session_id`,`state`,`product_id`,`quantity`) VALUES(
+					'$session','basket',$product_id,$quantity
+				);";
+				Symphony::Database()->query($sql);
+				return true;	
+			}
+		}
+		
+		
+		/**
+		 * Updates the database with a new quantity for the given item
+		 *
+		 * @param $product_id
+		 * @param $quantity
+		 *
+		*/
+		public function updateItemInBasket($product_id,$quantity){
+			$session = $this->initCartSession();
+			
+			if($this->productInBasket($product_id) != NULL){
+			
+				//clean all the values
+				$product_id = Symphony::Database()->cleanValue($product_id);
+				$quantity = Symphony::Database()->cleanValue($quantity);
+				$session = Symphony::Database()->cleanValue($session);
+				
+				$sql = "UPDATE $this->TABLE SET `quantity`=$quantity WHERE `session_id`='$session' AND `product_id`=$product_id";
+				
+				Symphony::Database()->query($sql);
+				return true;
+			}
+		}
+		
+		
+		/**
+		 * Removes an item from the basket
+		 *
+		 * @param product_id
+		 *
+		*/
+		public function removeItemFromBasket($product_id){
+			$session = $this->initCartSession();
+			
+			$product_id = Symphony::Database()->cleanValue($product_id);
+			$session = Symphony::Database()->cleanValue($session);
+			
+			$sql = "DELETE FROM $this->TABLE WHERE `product_id`=$product_id AND `session_id`='$session' AND `state`='$this->STATE_BASKET'";
 			Symphony::Database()->query($sql);
 			return true;
+		}
+		
+
+		/**
+		 * Checks if the given product is in the basket
+		 *
+		 * @param product_id
+		 *
+		 * Returns the product array if the product is currently in the basket
+		 * Returns NULL if not
+		*/
+		public function productInBasket($product_id){
+			$session = $this->initCartSession();
+			
+			//clean all the values
+			$product_id = Symphony::Database()->cleanValue($product_id);
+			$session = Symphony::Database()->cleanValue($session);
+			
+			$sql = "SELECT * FROM $this->TABLE WHERE `product_id`=$product_id AND `session_id`='$session' AND `state`='$this->STATE_BASKET'";
+			
+			$result = Symphony::Database()->fetchRow(0,$sql);
+			
+			if(count($result)>0){
+				return $result;
+			}
+			return NULL;
 		}
 		
 		
