@@ -31,10 +31,8 @@
 					'name' => 'David Anderson',
 					'website' => 'http://veodesign.co.uk/',
 					'email' => 'dave@veodesign.co.uk'
-				)
-			);
+				));
 		}
-		
 		
 		/**
 		 * Retrieve the XML and Pool Parameters
